@@ -3,11 +3,10 @@ import numpy as np
 from sklearn.metrics.pairwise import cosine_similarity
 
 import csv 
-from txt2vec import textTokenizer
+from CLIP import CLipEncoder
 
-# Init tex tokenizer
-txt2vec = textTokenizer()
-
+# Init encoder
+encoder = CLipEncoder()
 
 # Read filenames and embeddings of the index file
 index_file = "index.csv"
@@ -18,13 +17,13 @@ embeddings = []
 with open(index_file) as file_obj: 
   reader = csv.reader(file_obj) 
   for row in reader:
-      if ( len(row) == 768 + 1 ):
+      if ( len(row) == 512 + 1 ):
         files.append( row.pop(0) )
         embeddings.append( np.array(row) )
 
 # Ask for quesry and create and embeddign of it
 query = input('What are you searching for? ')
-query_embedding = txt2vec.getEmbedding(query)
+query_embedding = encoder.textEmbedding(query)
 
 # Convert the list of embeddings to a 2D array
 embeddings_array = np.vstack(embeddings)
