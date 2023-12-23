@@ -30,30 +30,35 @@ with open(index_file) as file_obj:
         files.append( row.pop(0) )
         embeddings.append( np.array(row) )
 
-# Ask for query and create and embedding of it
-query = input('What are you searching for? ')
-query_embedding = encoder.textEmbedding(query)
+while True:
+  # Ask for query and create and embedding of it
+  query = input('What are you searching for? (exit w empty) ')
 
-# Convert the list of embeddings to a 2D array
-embeddings_array = np.vstack(embeddings)
+  if query == '':
+    exit()
 
-# Calculate pairwise cosine similarity between the target and list of embeddings
-similarities = cosine_similarity([query_embedding], embeddings_array)
+  query_embedding = encoder.textEmbedding(query)
 
-# Get the indices that would sort the array
-sorted_indices = np.argsort(similarities)
+  # Convert the list of embeddings to a 2D array
+  embeddings_array = np.vstack(embeddings)
 
-# Take the last five indices for the five largest values
-five_largest_indices = sorted_indices[0, -5:]
+  # Calculate pairwise cosine similarity between the target and list of embeddings
+  similarities = cosine_similarity([query_embedding], embeddings_array)
 
-print('Five best matches:')
-for i in five_largest_indices:
-  filepath = files[i]
-  print(filepath)
-  # Open the file in defaul program
-  if platform.system() == 'Darwin':       # macOS
-      subprocess.call(('open', filepath))
-  elif platform.system() == 'Windows':    # Windows
-      os.startfile(filepath)
-  else:                                   # linux variants
-      subprocess.call(('xdg-open', filepath))
+  # Get the indices that would sort the array
+  sorted_indices = np.argsort(similarities)
+
+  # Take the last five indices for the five largest values
+  five_largest_indices = sorted_indices[0, -5:]
+
+  print('Five best matches:')
+  for i in five_largest_indices:
+    filepath = files[i]
+    print(filepath)
+    # Open the file in defaul program
+    if platform.system() == 'Darwin':       # macOS
+        subprocess.call(('open', filepath))
+    elif platform.system() == 'Windows':    # Windows
+        os.startfile(filepath)
+    else:                                   # linux variants
+        subprocess.call(('xdg-open', filepath))
