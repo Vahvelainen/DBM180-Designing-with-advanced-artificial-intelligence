@@ -2,8 +2,11 @@
 import numpy as np
 from sklearn.metrics.pairwise import cosine_similarity
 
+import subprocess, os, platform
 import csv 
 from CLIP import CLipEncoder
+
+print('Initalizing the model...')
 
 # Init encoder
 encoder = CLipEncoder()
@@ -17,7 +20,7 @@ embeddings = []
 with open(index_file) as file_obj: 
   reader = csv.reader(file_obj) 
   for row in reader:
-      if ( len(row) == 512 + 1 ):
+      if ( len(row) == 512 + 1 ): #Check that wo is as long as embedding + the filename
         files.append( row.pop(0) )
         embeddings.append( np.array(row) )
 
@@ -31,11 +34,20 @@ embeddings_array = np.vstack(embeddings)
 # Calculate pairwise cosine similarity between the target and list of embeddings
 similarities = cosine_similarity([query_embedding], embeddings_array)
 
-# Find the index of the most similar embedding
-most_similar_index = np.argmax(similarities)
+# Get the indices that would sort the array
+sorted_indices = np.argsort(similarities)
 
-# Retrieve the most similar embedding
-most_similar_embedding = files[most_similar_index]
+# Take the last five indices for the five largest values
+five_largest_indices = sorted_indices[0, -5:]
 
-print(f"Most similar embedding index: {most_similar_index}")
-print(f"Most similar embedding: {most_similar_embedding}")
+print('Five best matches:')
+for i in five_largest_indices:
+  filepath = files[i]
+  print(filepath)
+  # Open the file in defaul program
+  if platform.system() == 'Darwin':       # macOS
+      subprocess.call(('open', filepath))
+  elif platform.system() == 'Windows':    # Windows
+      os.startfile(filepath)
+  else:                                   # linux variants
+      subprocess.call(('xdg-open', filepath))
