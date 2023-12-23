@@ -2,7 +2,7 @@
 # conda install pytorch::pytorch torchvision torchaudio -c pytorch
 # pip install soundfile
 # pip install git+https://github.com/huggingface/transformers.git
-# pip install sentencepiec
+# pip install sentencepiece
 # pip install protobuf
 
 import soundfile as sf

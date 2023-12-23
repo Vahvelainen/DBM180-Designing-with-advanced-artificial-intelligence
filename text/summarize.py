@@ -1,4 +1,4 @@
-# !pip install transformers
+# pip install transformers
 
 from transformers import pipeline
 
@@ -14,5 +14,5 @@ After another Paris-based revolt in June 1793, the constitution was suspended an
 """
 
 summarizer = pipeline("summarization", model="philschmid/flan-t5-base-samsum")
-summary = summarizer(TEXT, max_length=30)
+summary = summarizer(TEXT, max_length=60)
 print(summary)

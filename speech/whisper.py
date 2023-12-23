@@ -2,6 +2,7 @@ import torch
 from transformers import AutoModelForSpeechSeq2Seq, AutoProcessor, pipeline
 from datasets import load_dataset
 
+# pip install datasets
 # pip install accelerate
 # pip install librosa
 

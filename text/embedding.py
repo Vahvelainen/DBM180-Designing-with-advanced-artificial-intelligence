@@ -1,7 +1,7 @@
 
 # Embeddings with https://www.sbert.net/
 
-# pip install -U sentence-transformers
+# pip install sentence-transformers
 from sentence_transformers import SentenceTransformer
 model = SentenceTransformer('all-MiniLM-L6-v2')
 
