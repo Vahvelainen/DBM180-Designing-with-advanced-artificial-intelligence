@@ -3,6 +3,12 @@ import csv
 
 from CLIP import CLipEncoder
 
+'''
+    Program to create a index.csv file to be used with the textSearch.py and future scripts
+    Creates a simple csv files of jpg files in given directory
+    The rows of the csv consist only of the filepath and the embedding vector
+'''
+
 image_dir = 'C:/Users/Leevi/Pictures/20231209'
 output_csv = 'index.csv'
 

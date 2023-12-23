@@ -3,7 +3,9 @@ from PIL import Image
 
 class CLipEncoder():
   '''
-    Creates coparable embeddings of length 512 from text and images
+    Creates comparable embeddings of length 512 from text and images
+    using the CLIP model https://huggingface.co/docs/transformers/model_doc/clip
+    with hugginface 
   '''
 
   def __init__(self):

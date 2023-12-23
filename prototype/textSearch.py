@@ -6,6 +6,11 @@ import subprocess, os, platform
 import csv 
 from CLIP import CLipEncoder
 
+'''
+Text based search for images that have been indexed with createIndex.py
+The program reads the index file, asks for a search query and open best five mathes for the given search.
+'''
+
 print('Initalizing the model...')
 
 # Init encoder
@@ -20,11 +25,12 @@ embeddings = []
 with open(index_file) as file_obj: 
   reader = csv.reader(file_obj) 
   for row in reader:
-      if ( len(row) == 512 + 1 ): #Check that wo is as long as embedding + the filename
+      # Check that csv.row is as long as embedding + the filename
+      if ( len(row) == 512 + 1 ):
         files.append( row.pop(0) )
         embeddings.append( np.array(row) )
 
-# Ask for quesry and create and embeddign of it
+# Ask for query and create and embedding of it
 query = input('What are you searching for? ')
 query_embedding = encoder.textEmbedding(query)
 
