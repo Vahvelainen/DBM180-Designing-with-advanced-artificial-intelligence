@@ -57,7 +57,7 @@ while True:
     print(filepath)
     # Open the file in defaul program
     if platform.system() == 'Darwin':       # macOS
-        subprocess.call(('open', filepath))
+        os.system(f"open {filepath}")
     elif platform.system() == 'Windows':    # Windows
         os.startfile(filepath)
     else:                                   # linux variants
