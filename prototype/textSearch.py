@@ -3,8 +3,8 @@ import numpy as np
 from sklearn.metrics.pairwise import cosine_similarity
 
 import subprocess, os, platform
-import csv 
 from CLIP import CLipEncoder
+from IndexTools import readIndex
 
 '''
 Text based search for images that have been indexed with createIndex.py
@@ -18,17 +18,7 @@ encoder = CLipEncoder()
 
 # Read filenames and embeddings of the index file
 index_file = "index.csv"
-
-files = []
-embeddings = []
-
-with open(index_file) as file_obj: 
-  reader = csv.reader(file_obj) 
-  for row in reader:
-      # Check that csv.row is as long as embedding + the filename
-      if ( len(row) == 512 + 1 ):
-        files.append( row.pop(0) )
-        embeddings.append( np.array(row) )
+embeddings, files = readIndex(index_file)
 
 while True:
   # Ask for query and create and embedding of it
