@@ -7,6 +7,9 @@ import numpy as np
 import csv 
 
 def readIndex(index_file):
+  '''
+  Reads csv file creted with createIndex.py and reurns (embeddings, files) as lists
+  '''
   files = []
   embeddings = []
 
