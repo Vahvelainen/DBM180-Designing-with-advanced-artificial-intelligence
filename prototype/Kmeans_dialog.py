@@ -15,9 +15,10 @@ decoder = BlipDecoder()
 
 # Read filenames and embeddings of the index file
 print('Opening index file...')
-index_file = "index_bu.csv"
+index_file = "index_fujifilm.csv"
 embeddings, files = readIndex(index_file)
 
+#Loop to move deeper in the clusters
 while True:
 
   # Do one round of clustering with k means
@@ -74,4 +75,3 @@ while True:
 
   files = filtered_files
   embeddings = filtered_embeddings
-      
