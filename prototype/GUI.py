@@ -51,6 +51,16 @@ class TkWindow():
       h_scrollbar = tk.Scrollbar(carousel_frame, orient='horizontal', command=canvas.xview)
       canvas.configure(xscrollcommand=h_scrollbar.set)
 
+      # Create a frame with buttons for expanding clustering or opening more media
+      action_frame = tk.Frame(carousel_frame)
+      header = tk.Label(action_frame, text='Cluster')
+      expand_button = tk.Button(action_frame, text='Expand', command=lambda: print('Expand pressed'))
+      explore_button = tk.Button(action_frame, text='Explore', command=lambda: print('Explore pressed'))
+      header.grid(row=0, column=0)
+      expand_button.grid(row=0, column=1)
+      explore_button.grid(row=0, column=2)
+      action_frame.grid(row=0, column=0, sticky='ew')
+
       # Create a frame for the images and buttons inside the canvas
       images_frame = tk.Frame(canvas)
 
@@ -72,8 +82,8 @@ class TkWindow():
           button.grid(row=1, column=i)
 
       # Position the canvas and horizontal scrollbar in the carousel frame
-      canvas.grid(row=0, column=0, sticky='ew')
-      h_scrollbar.grid(row=1, column=0, sticky='ew')
+      canvas.grid(row=1, column=0, sticky='ew')
+      h_scrollbar.grid(row=2, column=0, sticky='ew')
 
       # Update the inner frame to match the content
       images_frame.update_idletasks()
