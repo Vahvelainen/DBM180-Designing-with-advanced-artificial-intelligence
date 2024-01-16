@@ -10,6 +10,7 @@ class TkWindow():
     self.window_height = window_height
     self.root = tk.Tk()
     self.root.title("Python GUI")
+    self.root.resizable(False, True)
     self.root.geometry(F"{window_width}x{window_height}")
 
     # Creating a canvas and a scrollbar for vertical scrolling
@@ -79,4 +80,4 @@ class TkWindow():
       canvas.config(scrollregion=canvas.bbox('all'))
 
       # Pack the carousel frame into the main frame
-      carousel_frame.pack(fill='x', expand='true')
+      carousel_frame.pack()
