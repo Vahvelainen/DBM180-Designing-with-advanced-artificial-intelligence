@@ -1,5 +1,5 @@
 
-from GUI import TkWindow
+from GUI import TkWindow, FileCarousel
 from IndexTools import readIndex
 import numpy as np
 from sklearn.cluster import KMeans
@@ -38,7 +38,7 @@ for clusterIndex, center in enumerate(cluster_centers):
 embedding_clusters = sorted_embedding_clusters
 file_clusters = sorted_file_clusters
 
-for files in file_clusters:
-    window.addFileCarousel(files, max_open=5)
+for i, files in enumerate(file_clusters):
+    FileCarousel(window, files, max_open=5, header=F'Cluster #{i}')
 
 window.mainloop()

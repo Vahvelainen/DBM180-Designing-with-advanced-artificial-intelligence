@@ -39,55 +39,70 @@ class TkWindow():
     # Start the GUI event loop
     self.root.mainloop()
 
-  def addFileCarousel(self, image_paths, max_open = 5):
-      image_h = 80
-      image_w = 100
+class FileCarousel():
+  '''Carousel for showing files and handling actions fro them'''
+
+  def __init__ (self, window: TkWindow, file_paths, max_open=5, header='Cluster'):
+      self.file_paths = file_paths
+      self.open_index = 0
 
       # Create a new frame for the horizontal scrollable carousel
-      carousel_frame = tk.Frame(self.main_frame)
+      carousel_frame = tk.Frame(window.main_frame)
 
       # Create a canvas within the carousel frame
-      canvas = tk.Canvas(carousel_frame, height=120, width=self.window_width)
-      h_scrollbar = tk.Scrollbar(carousel_frame, orient='horizontal', command=canvas.xview)
-      canvas.configure(xscrollcommand=h_scrollbar.set)
+      self.canvas = tk.Canvas(carousel_frame, height=120, width=window.window_width)
+      h_scrollbar = tk.Scrollbar(carousel_frame, orient='horizontal', command=self.canvas.xview)
+      self.canvas.configure(xscrollcommand=h_scrollbar.set)
+
+      # Create a frame for the images and buttons inside the canvas
+      self.images_frame = tk.Frame(self.canvas)
+
+      # Add the images frame to the canvas's window
+      self.canvas.create_window((0, 0), window=self.images_frame, anchor='nw')
+
+      #Open files
+      self.openFiles(max_open)
 
       # Create a frame with buttons for expanding clustering or opening more media
       action_frame = tk.Frame(carousel_frame)
-      header = tk.Label(action_frame, text='Cluster')
-      expand_button = tk.Button(action_frame, text='Expand', command=lambda: print('Expand pressed'))
+      header = tk.Label(action_frame, text=header)
+      expand_button = tk.Button(action_frame, text='Expand', command=self.openFiles)
       explore_button = tk.Button(action_frame, text='Explore', command=lambda: print('Explore pressed'))
       header.grid(row=0, column=0)
       expand_button.grid(row=0, column=1)
       explore_button.grid(row=0, column=2)
       action_frame.grid(row=0, column=0, sticky='ew')
 
-      # Create a frame for the images and buttons inside the canvas
-      images_frame = tk.Frame(canvas)
-
-      # Add the images frame to the canvas's window
-      canvas.create_window((0, 0), window=images_frame, anchor='nw')
-      
-      for i, image_path in enumerate(image_paths):
-          if i == max_open:
-            break
-          original_image = openAndResizeImage(image_path, image_w, image_h)
-          photo = ImageTk.PhotoImage(original_image)
-
-          image_label = tk.Label(images_frame, image=photo, width=image_w, height=image_h)
-          image_label.photo = photo
-          image_label.grid(row=0, column=i)
-
-          openImage = lambda path=image_path: openFileInDefaultProgram(path)
-          button = tk.Button(images_frame, text="Open", command=openImage)
-          button.grid(row=1, column=i)
-
       # Position the canvas and horizontal scrollbar in the carousel frame
-      canvas.grid(row=1, column=0, sticky='ew')
+      self.canvas.grid(row=1, column=0, sticky='ew')
       h_scrollbar.grid(row=2, column=0, sticky='ew')
-
-      # Update the inner frame to match the content
-      images_frame.update_idletasks()
-      canvas.config(scrollregion=canvas.bbox('all'))
 
       # Pack the carousel frame into the main frame
       carousel_frame.pack()
+
+  def openFiles(self, max_open=5):
+    image_h = 80
+    image_w = 100
+    for iteration, _ in enumerate(self.file_paths):
+      if iteration == max_open:
+        break
+      i = self.open_index + iteration
+      if i >= len(self.file_paths):
+        break
+      file_path = self.file_paths[i]
+
+      original_image = openAndResizeImage(file_path, image_w, image_h)
+      photo = ImageTk.PhotoImage(original_image)
+
+      image_label = tk.Label(self.images_frame, image=photo, width=image_w, height=image_h)
+      image_label.photo = photo
+      image_label.grid(row=0, column=i)
+
+      openImage = lambda path=file_path: openFileInDefaultProgram(path)
+      button = tk.Button(self.images_frame, text="Open", command=openImage)
+      button.grid(row=1, column=i)
+    
+    self.open_index += max_open
+    #Update the inner frame to match the content
+    self.images_frame.update_idletasks()
+    self.canvas.config(scrollregion=self.canvas.bbox('all'))
