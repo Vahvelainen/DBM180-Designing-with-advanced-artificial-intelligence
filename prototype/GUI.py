@@ -58,7 +58,7 @@ class TkWindow():
 
     # Do clustering or look up from the dictionary
     if cluster not in self.clusterings.keys():
-      self.clusterings[cluster] = cluster.kmeans(4)
+      self.clusterings[cluster] = cluster.agglomerativeClustering(4)
     clustering = self.clusterings[cluster]
 
     for cluster2 in clustering:
