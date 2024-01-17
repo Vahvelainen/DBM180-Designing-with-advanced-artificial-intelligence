@@ -21,11 +21,8 @@ class TkWindow():
     self.scrollbar = tk.Scrollbar(self.root, orient='vertical', command=self.canvas.yview)
     self.canvas.configure(yscrollcommand=self.scrollbar.set)
 
-    # Creating a main frame inside the canvas
-    self.main_frame = tk.Frame(self.canvas)
-
-    # Adding the main frame to the canvas's window
-    self.canvas.create_window((0, 0), window=self.main_frame, anchor='nw')
+    self.main_frame = None
+    self.clearFrame()
 
     # Set up the layout for the main canvas and vertical scrollbar
     self.canvas.grid(row=0, column=0, sticky='nsew')
@@ -37,13 +34,26 @@ class TkWindow():
 
     self.explore(index)
 
+  def clearFrame(self):
+    if not self.main_frame == None:
+      self.main_frame.destroy()
+
+    # Creating a main frame inside the canvas
+    self.main_frame = tk.Frame(self.canvas)
+
+    # Adding the main frame to the canvas's window
+    self.canvas.create_window((0, 0), window=self.main_frame, anchor='nw')
+
   def mainloop(self):
     # Start the GUI event loop
     self.root.mainloop()
 
   def explore(self, cluster, label='Index'):
     '''Open files and embeddings and lay out the carousels'''
-    print(F"Exploring {label}")
+
+    print(F"Exploring {label}")    
+
+    self.clearFrame()
 
     embeddings, files = cluster
     embedding_clusters, file_clusters = self.clustering_function(embeddings, files)
