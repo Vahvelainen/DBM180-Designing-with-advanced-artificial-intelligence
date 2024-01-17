@@ -7,7 +7,8 @@ class TkWindow():
 
   def __init__(self, index: ([float], [str]), clustering_function: callable, window_width=820, window_height=640) -> None:
     self.clustering_function = clustering_function #Given as a parameter for easier exploring
-    self.clusters = [] #Clusters will be saved here in the explore fucntion for latere retriaval
+    self.clusterings = {} #Clusters will be saved here in the explore fucntion for later retriaval
+    self.previous_cluster = "Index" # name/key of the cluster we are going back to (This wont work for long but lest start with it)
 
     self.window_width = window_width
     self.window_height = window_height
@@ -32,7 +33,7 @@ class TkWindow():
     self.root.grid_rowconfigure(0, weight=1)
     self.root.grid_columnconfigure(0, weight=1)
 
-    self.explore(index)
+    self.explore(index, self.previous_cluster)
 
   def clearFrame(self):
     if not self.main_frame == None:
@@ -48,15 +49,25 @@ class TkWindow():
     # Start the GUI event loop
     self.root.mainloop()
 
-  def explore(self, cluster, label='Index'):
+  def explore(self, cluster, label):
     '''Open files and embeddings and lay out the carousels'''
 
     print(F"Exploring {label}")    
-
     self.clearFrame()
 
-    embeddings, files = cluster
-    embedding_clusters, file_clusters = self.clustering_function(embeddings, files)
+    #Add button for going back to previous cluster
+    toolbar = tk.Frame(self.main_frame)
+    previous_btn = tk.Button( toolbar, text=self.previous_cluster, command=lambda: self.explore(None, self.previous_cluster) )
+    previous_btn.grid(row=0, column=0, sticky='ew')
+    toolbar.pack()
+    self.previous_cluster = label
+
+    if label not in self.clusterings.keys():
+      embeddings, files = cluster
+      self.clusterings[label] = self.clustering_function(embeddings, files)
+
+
+    embedding_clusters, file_clusters = self.clusterings[label]
 
     for i, _ in enumerate(file_clusters):
       cluster2 = (embedding_clusters[i], file_clusters[i])
