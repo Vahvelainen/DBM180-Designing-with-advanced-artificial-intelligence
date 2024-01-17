@@ -1,20 +1,24 @@
-# PyTorch, for more advanced options go https://pytorch.org/get-started/locally/
-torch
-torchvision
-torchaudio
+# # PyTorch, for more advanced options go https://pytorch.org/get-started/locally/
+torch>=1.13.0
+torchvision>=0.14.0
+torchaudio>=0.13.0
 
-# Latest update on huggiface transformers
+# # Latest update on huggiface transformers
 git+https://github.com/huggingface/transformers.git
 
-# transalation.py
-soundfile
-sentencepiece
-protobuf
+# Wheels for mayavi, version that builds
+git+https://github.com/enthought/mayavi/zipball/master
 
-# whisper.py
-datasets
-accelerate
-librosa
-
-# embedding.py
-sentence-transformers
+# Imagebind
+pytorchvideo @ git+https://github.com/facebookresearch/pytorchvideo.git@28fe037d212663c6a24f373b94cc5d478c8c1a1d
+timm==0.6.7
+ftfy
+regex
+einops
+fvcore
+eva-decord==0.6.1
+iopath
+numpy>=1.19
+matplotlib
+types-regex
+cartopy
