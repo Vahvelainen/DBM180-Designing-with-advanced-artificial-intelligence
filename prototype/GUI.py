@@ -1,14 +1,13 @@
 import tkinter as tk
 from PIL import Image, ImageTk
 from tools import openFileInDefaultProgram, openAndResizeImage
+from clusters import Cluster
 
 class TkWindow():
   '''Class for handling all the components and TK stuff'''
 
-  def __init__(self, index: ([float], [str]), clustering_function: callable, window_width=820, window_height=640) -> None:
-    self.clustering_function = clustering_function #Given as a parameter for easier exploring
+  def __init__(self, index: Cluster, window_width=820, window_height=640) -> None:
     self.clusterings = {} #Clusters will be saved here in the explore fucntion for later retriaval
-    self.previous_cluster = "Index" # name/key of the cluster we are going back to (This wont work for long but lest start with it)
 
     self.window_width = window_width
     self.window_height = window_height
@@ -33,7 +32,7 @@ class TkWindow():
     self.root.grid_rowconfigure(0, weight=1)
     self.root.grid_columnconfigure(0, weight=1)
 
-    self.explore(index, self.previous_cluster)
+    self.explore(index)
 
   def clearFrame(self):
     if not self.main_frame == None:
@@ -49,39 +48,50 @@ class TkWindow():
     # Start the GUI event loop
     self.root.mainloop()
 
-  def explore(self, cluster, label):
+  def explore(self, cluster: Cluster):
     '''Open files and embeddings and lay out the carousels'''
 
-    print(F"Exploring {label}")    
+    print(F"Exploring {cluster.str}")    
     self.clearFrame()
 
-    #Add button for going back to previous cluster
-    toolbar = tk.Frame(self.main_frame)
-    previous_btn = tk.Button( toolbar, text=self.previous_cluster, command=lambda: self.explore(None, self.previous_cluster) )
-    previous_btn.grid(row=0, column=0, sticky='ew')
-    toolbar.pack()
-    self.previous_cluster = label
+    self.addBreadCrumbs(cluster)
 
-    if label not in self.clusterings.keys():
-      embeddings, files = cluster
-      self.clusterings[label] = self.clustering_function(embeddings, files)
+    # Do clustering or look up from the dictionary
+    if cluster not in self.clusterings.keys():
+      self.clusterings[cluster] = cluster.kmeans(4)
+    clustering = self.clusterings[cluster]
 
-
-    embedding_clusters, file_clusters = self.clusterings[label]
-
-    for i, _ in enumerate(file_clusters):
-      cluster2 = (embedding_clusters[i], file_clusters[i])
-      FileCarousel(self, cluster2, max_open=5, header=F'{label} > Cluster #{i}')
+    for cluster2 in clustering:
+      FileCarousel(self, cluster2, max_open=5)
 
     # Update the scrollregion of the canvas to encompass the main_frame with all carousels
     self.main_frame.update_idletasks()
     self.canvas.config(scrollregion=self.canvas.bbox('all'))
 
+  def addBreadCrumbs(self, cluster: Cluster):
+    #Add breadcrumps for going back to previous cluster
+    toolbar = tk.Frame(self.main_frame)
+    prev_clusters = []
+    previous = cluster
+    while previous.parent != None:
+      previous = previous.parent
+      prev_clusters.append(previous)
+    prev_clusters.reverse()
+    for prev_cluster in prev_clusters:
+      previous_btn = tk.Button( toolbar, text=prev_cluster.label, command=lambda: self.explore(prev_cluster) )
+      previous_btn.pack(side='left')
+      tick_label = tk.Label(toolbar, text='>')
+      tick_label.pack(side='left')
+    cluster_label = tk.Label(toolbar, text=cluster.label)
+    cluster_label.pack(side='left')
+    toolbar.pack()
+
 class FileCarousel():
   '''Carousel for showing files and handling actions fro them'''
 
-  def __init__ (self, window: TkWindow, cluster: ([float], [str]), max_open=5, header='Cluster'):
-      embeddings, file_paths = cluster
+  def __init__ (self, window: TkWindow, cluster: Cluster, max_open=5):
+      header = cluster.label
+      file_paths = cluster.files
       self.file_paths = file_paths
       self.open_index = 0
 
@@ -105,11 +115,12 @@ class FileCarousel():
       # Create a frame with buttons for expanding clustering or opening more media
       action_frame = tk.Frame(carousel_frame)
       label = tk.Label(action_frame, text=header)
-      expand_button = tk.Button(action_frame, text='Expand', command=self.openFiles)
-      explore_button = tk.Button(action_frame, text='Explore', command=lambda: window.explore(cluster, header))
       label.grid(row=0, column=0)
+      expand_button = tk.Button(action_frame, text='Expand', command=self.openFiles)
       expand_button.grid(row=0, column=1)
-      explore_button.grid(row=0, column=2)
+      if cluster.len > 4: #Expand button only necessary when there is somethign to divide
+        explore_button = tk.Button(action_frame, text='Explore', command=lambda: window.explore(cluster))
+        explore_button.grid(row=0, column=2)
       action_frame.grid(row=0, column=0, sticky='ew')
 
       # Position the canvas and horizontal scrollbar in the carousel frame
