@@ -5,7 +5,10 @@ from tools import openFileInDefaultProgram, openAndResizeImage
 class TkWindow():
   '''Class for handling all the components and TK stuff'''
 
-  def __init__(self, window_width=820, window_height=640) -> None:
+  def __init__(self, index: ([float], [str]), clustering_function: callable, window_width=820, window_height=640) -> None:
+    self.clustering_function = clustering_function #Given as a parameter for easier exploring
+    self.clusters = [] #Clusters will be saved here in the explore fucntion for latere retriaval
+
     self.window_width = window_width
     self.window_height = window_height
     self.root = tk.Tk()
@@ -32,17 +35,32 @@ class TkWindow():
     self.root.grid_rowconfigure(0, weight=1)
     self.root.grid_columnconfigure(0, weight=1)
 
+    self.explore(index)
+
   def mainloop(self):
+    # Start the GUI event loop
+    self.root.mainloop()
+
+  def explore(self, cluster, label='Index'):
+    '''Open files and embeddings and lay out the carousels'''
+    print(F"Exploring {label}")
+
+    embeddings, files = cluster
+    embedding_clusters, file_clusters = self.clustering_function(embeddings, files)
+
+    for i, _ in enumerate(file_clusters):
+      cluster2 = (embedding_clusters[i], file_clusters[i])
+      FileCarousel(self, cluster2, max_open=5, header=F'{label} > Cluster #{i}')
+
     # Update the scrollregion of the canvas to encompass the main_frame with all carousels
     self.main_frame.update_idletasks()
     self.canvas.config(scrollregion=self.canvas.bbox('all'))
-    # Start the GUI event loop
-    self.root.mainloop()
 
 class FileCarousel():
   '''Carousel for showing files and handling actions fro them'''
 
-  def __init__ (self, window: TkWindow, file_paths, max_open=5, header='Cluster'):
+  def __init__ (self, window: TkWindow, cluster: ([float], [str]), max_open=5, header='Cluster'):
+      embeddings, file_paths = cluster
       self.file_paths = file_paths
       self.open_index = 0
 
@@ -65,10 +83,10 @@ class FileCarousel():
 
       # Create a frame with buttons for expanding clustering or opening more media
       action_frame = tk.Frame(carousel_frame)
-      header = tk.Label(action_frame, text=header)
+      label = tk.Label(action_frame, text=header)
       expand_button = tk.Button(action_frame, text='Expand', command=self.openFiles)
-      explore_button = tk.Button(action_frame, text='Explore', command=lambda: print('Explore pressed'))
-      header.grid(row=0, column=0)
+      explore_button = tk.Button(action_frame, text='Explore', command=lambda: window.explore(cluster, header))
+      label.grid(row=0, column=0)
       expand_button.grid(row=0, column=1)
       explore_button.grid(row=0, column=2)
       action_frame.grid(row=0, column=0, sticky='ew')
