@@ -2,6 +2,7 @@
 import subprocess, os, platform
 from CLIP import CLipEncoder
 from clusters import Cluster, readIndex
+from tools import openFileInDefaultProgram
 
 '''
 Text based search for images that have been indexed with createIndex.py
@@ -32,10 +33,4 @@ while True:
   for i in range(5):
     filepath = index.files[i]
     print(filepath)
-    # Open the file in defaul program
-    if platform.system() == 'Darwin':       # macOS
-        os.system(f"open {filepath}")
-    elif platform.system() == 'Windows':    # Windows
-        os.startfile(filepath)
-    else:                                   # linux variants
-        subprocess.call(('xdg-open', filepath))
+    openFileInDefaultProgram(filepath)
