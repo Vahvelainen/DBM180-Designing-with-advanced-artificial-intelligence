@@ -1,7 +1,7 @@
 import os
 import csv
 from tqdm import tqdm
-from CLIP import CLipEncoder
+from imagebindEncoder import ImagebindEncoder
 
 '''
     A nicer version of create Index.py that:
@@ -9,9 +9,9 @@ from CLIP import CLipEncoder
     - Gives a progressbar
 '''
 
-
-image_dir = 'C:/Users/Leevi/Pictures'
-output_csv = 'index.csv'
+# Make sure to use "/" instead of "\" 
+image_dir = '/Users/leevi/Datasets'
+output_csv = 'index_ib.csv'
 
 def find_directories(base_path, depth=1, max_depth=3):
     # List to hold the directories
@@ -35,17 +35,20 @@ def find_directories(base_path, depth=1, max_depth=3):
 dirs = find_directories(image_dir)
 dirs.append(image_dir)
 
-# Find jpg files in the directories
-jpg_files = []
-
+# Find compatible files in directiries
+files = []
 for dir in dirs:
+    # Save files as tuples: ( filepath, filetype: ['text', 'image, 'audio'])
     jpgs_in_this_dir = [ file for file in os.listdir(dir) if file.lower().endswith('.jpg') ]
     for jpg in jpgs_in_this_dir:
-        jpg_files.append( dir + '/' + jpg)
+        files.append( (dir + '/' + jpg, 'image') )
+    mp3s_in_this_dir = [ file for file in os.listdir(dir) if file.lower().endswith('.mp3') ]
+    for mp3 in mp3s_in_this_dir:
+        files.append( (dir + '/' + mp3, 'audio') )
 
-print('Found ' + str(len(jpg_files)) + ' jpg files in directory')
+print('Found ' + str(len(files)) + ' compatible files in directory')
 
-encoder = CLipEncoder()
+encoder = ImagebindEncoder()
 
 # Write embeddings to CSV
 with open(output_csv, 'w', newline='') as csvfile:
@@ -53,13 +56,20 @@ with open(output_csv, 'w', newline='') as csvfile:
     csvwriter.writerow(['Filename', 'Embedding'])  # Write header
 
     # Wrap the jpg_files iterable with tqdm to create a progress bar
-    with tqdm(jpg_files, desc='Encoding Images') as pbar:
-        for image_file in pbar:
+    with tqdm(files, desc='Encoding Images') as pbar:
+        for file in pbar:
             # Set the description to the current image file being processed
-            pbar.set_description(f"Processing {image_file}")
+            filepath, filetype = file
+            pbar.set_description(f"Processing {filepath}")
+
+            embedding = []
             
             #Get embedding and write a line to the csv file 
-            embedding = encoder.imageEmbedding(image_file)
-            csvwriter.writerow([image_file] + embedding.tolist()) 
+            if filetype == 'image':
+                embedding = encoder.imageEmbedding(filepath)
+            elif filetype == 'audio':
+                embedding = encoder.audioEmbedding(filepath)
+
+            csvwriter.writerow([filepath] + embedding.tolist()) 
 
 print("Completed and written to CSV!")

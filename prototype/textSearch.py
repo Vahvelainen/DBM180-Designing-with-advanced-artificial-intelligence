@@ -1,5 +1,5 @@
 
-from CLIP import CLipEncoder
+from imagebindEncoder import ImagebindEncoder
 from clusters import Cluster, readIndex
 from tools import openFileInDefaultProgram
 
@@ -11,11 +11,12 @@ The program reads the index file, asks for a search query and open best five mat
 print('Initalizing the model...')
 
 # Init encoder
-encoder = CLipEncoder()
+encoder = ImagebindEncoder()
 
 # Read filenames and embeddings of the index file
-index_file = "index.csv"
+index_file = "index_ib.csv"
 index = readIndex(index_file)
+print(F"Found {len(index.files)} files in index" )
 
 while True:
   # Ask for query and create and embedding of it

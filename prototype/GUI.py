@@ -1,7 +1,7 @@
 import tkinter as tk
 from PIL import Image, ImageTk
 from tools import openFileInDefaultProgram, openAndResizeImage
-from clusters import Cluster
+from clusters import Cluster, readIndex
 
 class TkWindow():
   '''Class for handling all the components and TK stuff'''
@@ -58,7 +58,7 @@ class TkWindow():
 
     # Do clustering or look up from the dictionary
     if cluster not in self.clusterings.keys():
-      self.clusterings[cluster] = cluster.agglomerativeClustering(4)
+      self.clusterings[cluster] = cluster.kmeans(4)
     clustering = self.clusterings[cluster]
 
     for cluster2 in clustering:
@@ -78,7 +78,7 @@ class TkWindow():
       prev_clusters.append(previous)
     prev_clusters.reverse()
     for prev_cluster in prev_clusters:
-      previous_btn = tk.Button( toolbar, text=prev_cluster.label, command=lambda: self.explore(prev_cluster) )
+      previous_btn = tk.Button( toolbar, text=prev_cluster.label, command=lambda cluster=prev_cluster: self.explore(cluster) )
       previous_btn.pack(side='left')
       tick_label = tk.Label(toolbar, text='>')
       tick_label.pack(side='left')
@@ -92,7 +92,9 @@ class FileCarousel():
   def __init__ (self, window: TkWindow, cluster: Cluster, max_open=5):
       header = cluster.label
       file_paths = cluster.files
+
       self.file_paths = file_paths
+      self.cluster = cluster
       self.open_index = 0
 
       # Create a new frame for the horizontal scrollable carousel
@@ -131,8 +133,6 @@ class FileCarousel():
       carousel_frame.pack()
 
   def openFiles(self, max_open=5):
-    image_h = 80
-    image_w = 100
     for iteration, _ in enumerate(self.file_paths):
       if iteration == max_open:
         break
@@ -141,12 +141,7 @@ class FileCarousel():
         break
       file_path = self.file_paths[i]
 
-      original_image = openAndResizeImage(file_path, image_w, image_h)
-      photo = ImageTk.PhotoImage(original_image)
-
-      image_label = tk.Label(self.images_frame, image=photo, width=image_w, height=image_h)
-      image_label.photo = photo
-      image_label.grid(row=0, column=i)
+      self.addFileLabel(file_path, i)
 
       openImage = lambda path=file_path: openFileInDefaultProgram(path)
       button = tk.Button(self.images_frame, text="Open", command=openImage)
@@ -156,3 +151,28 @@ class FileCarousel():
     #Update the inner frame to match the content
     self.images_frame.update_idletasks()
     self.canvas.config(scrollregion=self.canvas.bbox('all'))
+
+  def addFileLabel(self, file_path, index, width=100, height=80):
+
+    #imagefile
+    if file_path.lower().endswith('.jpg'):
+      original_image = openAndResizeImage(file_path, width, height)
+      photo = ImageTk.PhotoImage(original_image)
+      label = tk.Label(self.images_frame, image=photo, width=width, height=height)
+      label.photo = photo
+      label.grid(row=0, column=index)
+    #audiofile
+    elif file_path.lower().endswith('.mp3'):
+      #Dum do do this here everytime
+      labels = readIndex('prototype/audio_labels.index')
+      embedding = self.cluster.embeddings[index]
+      labels.sortByDistanceTo(embedding)
+
+      description = 'Audio: '
+      for i in range(3):
+        #Usinf .files for labels is kinda ugly but it is what it is :(
+        description = description + '\n' + labels.files[i]
+
+      # The aduo text does not aling with images but I don't know how to fix it bc either TKinker is stupid or I am
+      label = tk.Label(self.images_frame, text=description)
+      label.grid(row=0, column=index)

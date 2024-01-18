@@ -50,38 +50,7 @@ class Cluster():
 
     clusters = []
     for i in range(K):
-      cluster = Cluster(embedding_clusters[i], file_clusters[i], F"Cluster #{i}", self)
-      cluster.sortByDistanceTo(cluster_centers[i])
-      clusters.append(cluster)
-
-    return clusters
-  
-  def agglomerativeClustering(self, K = 3):
-    '''
-    Divides cluster into K sub-clusters with AgglomerativeClustering
-    the sub-clusters are sorted by the distance to the cluster center 
-    '''
-    np_embeddings = np.array(self.embeddings, dtype=float) 
-    clustering = AgglomerativeClustering(K).fit(np_embeddings)
-    labels = clustering.labels_
-
-    file_clusters = [[] for i in range(K)]
-    embedding_clusters = [[] for i in range(K)]
-    for i, label in enumerate(labels):
-        file_clusters[label].append( self.files[i] )
-        embedding_clusters[label].append( np_embeddings[i] )
-
-    # Calculate cluster centers bc Agg doesnt rock it
-    cluster_centers = []
-    for cluster in embedding_clusters:
-        centroid = np.mean(cluster, axis=0)
-        cluster_centers.append(centroid)
-
-    # Make and sort clusters
-    clusters = []
-    for i in range(K):
-
-      # A sckethy way to make clustersnames more deescribing, might break up if toucehed
+      # Bogged way to make cluster names more deescribing, might break up if toucehed
       clusterName = "Cluster #"
       if '#' in self.label:
          clusterName = clusterName + self.label.split('#')[1] + '.'
@@ -111,7 +80,7 @@ def readIndex(index_file):
     reader = csv.reader(file_obj) 
     for row in reader:
         # Check that csv.row is as long as embedding + the filename
-        if ( len(row) == 512 + 1 ):
+        if ( len(row) == 1024 + 1 ):
           files.append( row.pop(0) )
           embeddings.append( np.array(row) )
 
