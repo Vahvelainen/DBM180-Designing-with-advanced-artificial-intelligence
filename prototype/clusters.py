@@ -80,7 +80,14 @@ class Cluster():
     # Make and sort clusters
     clusters = []
     for i in range(K):
-      cluster = Cluster(embedding_clusters[i], file_clusters[i], F"Cluster #{i}", self)
+
+      # A sckethy way to make clustersnames more deescribing, might break up if toucehed
+      clusterName = "Cluster #"
+      if '#' in self.label:
+         clusterName = clusterName + self.label.split('#')[1] + '.'
+      clusterName = clusterName + str(i)
+
+      cluster = Cluster(embedding_clusters[i], file_clusters[i], clusterName, self)
       cluster.sortByDistanceTo(cluster_centers[i])
       clusters.append(cluster)
 
