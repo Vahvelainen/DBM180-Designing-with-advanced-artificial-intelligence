@@ -1,5 +1,4 @@
 
-import subprocess, os, platform
 from CLIP import CLipEncoder
 from clusters import Cluster, readIndex
 from tools import openFileInDefaultProgram
