@@ -1,13 +1,10 @@
 
-from GUI import TkWindow, FileCarousel
-from IndexTools import readIndex
-from clusters import Cluster
+from GUI import TkWindow
+from clusters import Cluster, readIndex
 
-# Clustering here
 print('Opening index file...')
 index_file = "index_fujifilm.csv"
-embeddings, files = readIndex(index_file)
-index = Cluster(embeddings, files, 'Index')
+index = readIndex(index_file)
 
 window = TkWindow( index )
 window.mainloop()

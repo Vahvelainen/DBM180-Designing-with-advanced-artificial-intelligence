@@ -1,6 +1,12 @@
 import numpy as np
 from sklearn.cluster import KMeans, AgglomerativeClustering
 from sklearn.metrics.pairwise import cosine_similarity
+import csv 
+
+'''
+Class for handling clusters
+Also a method for loading index into cluster
+'''
 
 class Cluster():
   '''
@@ -86,3 +92,20 @@ class Cluster():
       sorted_indexes = np.flip(sorted_indexes)
       self.embeddings = [ self.embeddings[i] for i in sorted_indexes ]
       self.files = [ self.files[i] for i in sorted_indexes ]
+
+def readIndex(index_file):
+  '''
+  Reads csv file creted with createIndex.py and reurns (embeddings, files) as lists
+  '''
+  files = []
+  embeddings = []
+
+  with open(index_file) as file_obj: 
+    reader = csv.reader(file_obj) 
+    for row in reader:
+        # Check that csv.row is as long as embedding + the filename
+        if ( len(row) == 512 + 1 ):
+          files.append( row.pop(0) )
+          embeddings.append( np.array(row) )
+
+  return Cluster(embeddings, files, 'Index')
