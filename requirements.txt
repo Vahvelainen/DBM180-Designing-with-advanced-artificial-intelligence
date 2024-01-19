@@ -3,11 +3,18 @@ torch>=1.13.0
 torchvision>=0.14.0
 torchaudio>=0.13.0
 
-# # Latest update on huggiface transformers
-git+https://github.com/huggingface/transformers.git
+# Latest update on huggiface transformers
+# git+https://github.com/huggingface/transformers.git
 
-# Wheels for mayavi, version that builds
-git+https://github.com/enthought/mayavi/zipball/master
+#File handling
+pillow
+soundfile
+
+# sklearn for clusrtering
+scikit-learn
+
+# Wheels for mayavi, version that builds with anaconda
+mayavi @ https://github.com/enthought/mayavi/zipball/master
 
 # Imagebind
 pytorchvideo @ git+https://github.com/facebookresearch/pytorchvideo.git@28fe037d212663c6a24f373b94cc5d478c8c1a1d
