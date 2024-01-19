@@ -26,13 +26,13 @@ The program supports following fileformats:
 - jpg
 - mp3
 
-Create the index file by running ```python3 prototype/createIndex.py``` and inserting the path to the desired folder you want to use for creating the index.
+Create the index file by running ```python prototype/createIndex.py``` and inserting the path to the desired folder you want to use for creating the index.
 Please note that the program will explore the folders up three subfolders deep.
 
 The index file must be done before using the other features. After creating the index file, any changes to the file locations might cause unexpet behaviour, mainly crashes for not finding the files.
 
 ## 4. Explore Graphical UI or use plain text search
 
-You can run a graphical UI with ```python3 GUI.py```
+You can run a graphical UI with ```python prototype/GUI.py```
 
-Commandline based text search for files can be opened with ```python3 text_search.py```
+Commandline based text search for files can be opened with ```python prototype/textSearch.py```

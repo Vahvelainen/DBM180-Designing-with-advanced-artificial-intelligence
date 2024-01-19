@@ -1,6 +1,6 @@
 
-from prototype.GUIcomponents import TkWindow
-from prototype.clusters import readIndex
+from GUIcomponents import TkWindow
+from clusters import readIndex
 
 print('Opening index file...')
 index_file = "index.csv"

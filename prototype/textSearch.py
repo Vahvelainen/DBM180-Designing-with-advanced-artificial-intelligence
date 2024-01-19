@@ -1,7 +1,7 @@
 
-from prototype.imagebindEncoder import ImagebindEncoder
-from prototype.clusters import readIndex
-from prototype.tools import openFileInDefaultProgram
+from imagebindEncoder import ImagebindEncoder
+from clusters import readIndex
+from tools import openFileInDefaultProgram
 
 '''
 Text based search for files that have been indexed with createIndex.py
