@@ -1,39 +1,24 @@
 import os
 import csv
 from tqdm import tqdm
+from tools import findDirectories
 from imagebindEncoder import ImagebindEncoder
 
+
 '''
-    A nicer version of create Index.py that:
-    - Browses up to three folders deep in given picture folder
-    - Gives a progressbar
+    Program to create a index.csv file to be used with the textSearch.py and future scripts
+    Creates a simple csv files of jpg and mp3 files in given directory up to three directories deep
+    The rows of the csv consist only of the filepath and the embedding vector
 '''
 
-# Make sure to use "/" instead of "\" 
-image_dir = '/Users/leevi/Datasets'
-output_csv = 'index_ib.csv'
+media_dir = input('Give path to the directory you wish to index: ')
+media_dir = media_dir.replace("\\", "/") #For windows users
 
-def find_directories(base_path, depth=1, max_depth=3):
-    # List to hold the directories
-    directories = []
-
-    # Check if the maximum depth has been reached
-    if depth > max_depth:
-        return directories
-
-    # Loop through each item in the directory
-    for entry in os.scandir(base_path):
-        if entry.is_dir():  # If the item is a directory
-            new_path = base_path + '/' + entry.name
-            directories.append(new_path)
-            # Recursively find directories in the current directory
-            directories.extend(find_directories(new_path, depth + 1, max_depth))
-
-    return directories
+output_csv = 'index.csv'
 
 # Find up to thee dirs deeps
-dirs = find_directories(image_dir)
-dirs.append(image_dir)
+dirs = findDirectories(media_dir, max_depth=3)
+dirs.append(media_dir)
 
 # Find compatible files in directiries
 files = []
