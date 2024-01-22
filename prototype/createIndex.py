@@ -6,9 +6,9 @@ from imagebindEncoder import ImagebindEncoder
 
 
 '''
-    Program to create a index.csv file to be used with the textSearch.py and future scripts
-    Creates a simple csv files of jpg and mp3 files in given directory up to three directories deep
-    The rows of the csv consist only of the filepath and the embedding vector
+Program to create a index.csv file to be used with the textSearch.py and future scripts
+Creates a simple csv files of jpg and mp3 files in given directory up to three directories deep
+The rows of the csv consist only of the filepath and the embedding vector
 '''
 
 media_dir = input('Give path to the directory you wish to index: ')

@@ -1,6 +1,11 @@
 import subprocess, os, platform
 from PIL import Image, ImageTk
 
+'''
+Collecton of simple and self-explanatory functions used in around the project
+Most of them are more or less straigth from ChatGPT by OpenAI
+'''
+
 def openFileInDefaultProgram(filepath):
   print(F"Open file: {filepath}")
   # Open the file in defaul program

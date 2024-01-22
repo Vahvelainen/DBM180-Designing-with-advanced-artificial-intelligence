@@ -1,11 +1,12 @@
-
-
 from imagebind import data
 import torch
 from imagebind.models import imagebind_model
 from imagebind.models.imagebind_model import ModalityType
 
 class ImagebindEncoder():
+    '''
+    Class for producing embedding vectors of 1024 dimensions with the imagebind model by MetaAI
+    '''
 
     def __init__(self) -> None:
         self.device = "cuda:0" if torch.cuda.is_available() else "cpu"
@@ -15,19 +16,32 @@ class ImagebindEncoder():
         self.model.eval()
         self.model.to(self.device)
 
-    def textEmbedding(self, text): #Could be used for getting all the embedding at once if its any better (it might)
+    def textEmbedding(self, text):
+        '''
+        Get text embdding with imageBind
+        1. attribute: input text
+        Note: unlike other modalities, text embedding takes the text itself, not a filepath
+        '''
         inputs = { ModalityType.TEXT: data.load_and_transform_text([text], self.device) }
         with torch.no_grad():
             tensor = self.model(inputs)['text']
         return tensor.detach().numpy()[0]
     
-    def imageEmbedding(self, filepath): #Could be used for getting all the embedding at once if its any better (it might)
+    def imageEmbedding(self, filepath): 
+        '''
+        Get image embdding with imageBind
+        1. attribute: path to input file
+        '''
         inputs = { ModalityType.VISION: data.load_and_transform_vision_data([filepath], self.device) }
         with torch.no_grad():
             tensor = self.model(inputs)['vision']
         return tensor.detach().numpy()[0] 
 
-    def audioEmbedding(self, filepath): #Could be used for getting all the embedding at once if its any better (it might)
+    def audioEmbedding(self, filepath):
+        '''
+        Get audio embdding with imageBind
+        1. attribute: path to input file
+        '''
         inputs = { ModalityType.AUDIO: data.load_and_transform_audio_data([filepath], self.device) }
         with torch.no_grad():
             tensor = self.model(inputs)['audio']

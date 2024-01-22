@@ -153,6 +153,7 @@ class FileCarousel():
     self.canvas.config(scrollregion=self.canvas.bbox('all'))
 
   def addFileLabel(self, file_path, index, width=100, height=80):
+    '''Method for showing different filetypes in GUI'''
 
     #imagefile
     if file_path.lower().endswith('.jpg'):
