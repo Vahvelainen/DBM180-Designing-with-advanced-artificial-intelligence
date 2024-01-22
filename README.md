@@ -25,6 +25,7 @@ The project works by first creating index in the form of a csv file for the fiel
 The program supports following fileformats:
 - jpg
 - mp3
+- txt
 
 Create the index file by running ```python prototype/createIndex.py``` and inserting the path to the desired folder you want to use for creating the index.
 Please note that the program will explore the folders up three subfolders deep.
