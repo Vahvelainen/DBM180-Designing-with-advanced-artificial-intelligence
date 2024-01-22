@@ -30,7 +30,7 @@ def findDirectories(base_path, depth=1, max_depth=3):
             new_path = base_path + '/' + entry.name
             directories.append(new_path)
             # Recursively find directories in the current directory
-            directories.extend(find_directories(new_path, depth + 1, max_depth))
+            directories.extend(findDirectories(new_path, depth + 1, max_depth))
 
     return directories
 
