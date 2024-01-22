@@ -1,60 +1,67 @@
+# AI2Ethnography
 
-# AI2Ethnoragphy
+This demonstration showcases an AI-powered media exploration tool built for conducting an autoethnographic study. The tool utilizes ImageBind by Meta AI to index various file formats into a single embedding space, allowing for efficient exploration of media files.
 
-This is a demonstration of an ai powered media exploring tool build for the purposes of conducting an autoethnographic study.
-The tool uses ImageBind by Meta AI to index different fileformats into single embedding space and uses those embeddings to explore the files.
-
-This is a project done for the course DBM180 Designing with advanced artificial intelligence in Eindhoven University of Technology
+This project was developed as part of the course DBM180 Designing with Advanced Artificial Intelligence at Eindhoven University of Technology.
 
 ## Quickstart
 
-Use the following steps to use the program
+Follow these steps to start using the program:
 
-### 1. Istall requirement
+### 1. Install Requirements
 
-Create python 3.11 enviroment for pytorch with anaconda or conda.
+Create a Python 3.11 environment for PyTorch with Anaconda or Conda.
 
-Istall of requirements with
-``` pip install -r requirements.txt ```
+Install the requirements using:
+```sh
+pip install -r requirements.txt
+```
 
-Non-conda enviroments might or might not work out of the box or migh require additional packages. Tested only with anaconda.
+Non-Conda environments may or may not work seamlessly and might require additional packages. Testing has only been conducted with Anaconda.
 
-### 3. Creata an index
+### 2. Create an Index
 
-The project works by first creating index in the form of a csv file for the fiels you want to explore.
-The program supports following fileformats:
-- jpg
-- mp3
-- txt
+The project functions by first creating an index in the form of a CSV file for the files you wish to explore.
+The program supports the following file formats:
+- .jpg
+- .mp3
+- .txt
 
-Create the index file by running ```python prototype/createIndex.py``` and inserting the path to the desired folder you want to use for creating the index.
-Please note that the program will explore the folders up three subfolders deep.
+Create the index file by running:
+```sh
+python prototype/createIndex.py
+```
+and enter the path to the folder you want to use for creating the index.
+Please note that the program will traverse the folders to a depth of three subfolders.
 
-The index file must be done before using the other features. After creating the index file, any changes to the file locations might cause unexpet behaviour, mainly crashes for not finding the files.
+The index file must be generated before using the other features. Any changes to file locations after creating the index may result in unexpected behavior, including crashes due to the files not being found.
 
-### 4. Explore Graphical UI or use plain text search
+### 3. Explore Using the Graphical UI or Plain Text Search
 
-To use the graphical UI run ```python prototype/GUI.py```
+To use the graphical UI, run:
+```sh
+python prototype/GUI.py
+```
 
-Commandline based text search for files can be opened with ```python prototype/textSearch.py```
+A command-line-based text search for files can be started with:
+```sh
+python prototype/textSearch.py
+```
 
-## Operating principles
+## Operating Principles
 
-#### Indexing files with ImageBind
+### Indexing Files with ImageBind
 
-The whole operating princible is build around of capability of the ImageBind model to embed files of different modalities into one embedding space.
-These embedding are saved into csv with the file name and the embeddign vector of 1024 dimensios consisting one row. This index file is build by createIndex.py and red by both GUI.py and textSearch.py
+The core principle of operation is based on the ability of the ImageBind model to embed files of different modalities into a single embedding space. These embeddings are saved into a CSV along with the filename, with each embedding vector consisting of 1024 dimensions forming one row. This index file is created by `createIndex.py` and read by both `GUI.py` and `textSearch.py`. For more information on ImageBind, visit:
 https://github.com/facebookresearch/ImageBind
 
+### K-Means Clustering
 
-#### K-means clustering
+The GUI employs a straightforward approach of dividing data into four separate clusters using K-means clustering. Each cluster can be further explored by dividing them into four subclusters, making the system hierarchical.
 
-The GUI uses simple aproach of dividing data into 4 separate clusters with K-means clustering. Each cluster can be explored by dividing them to 4 subclusters making the system hierachical. 
+### Sorting with Cosine Similarity
 
-#### Sorting with Cosine similarity
-
-In many places for sorting files based on their embeddings Cosien similarity is used for as the metric.
-This sorting is used for:
-- in GUI prioritizing the files showed in the cluster preview
-- Giving audiofiles three labels from audio_labels.index to show in GUI
-- Finding top 5 results for query in textSearch.py
+Cosine similarity is used throughout the program to sort files based on their embeddings. This sorting is implemented for:
+- Prioritizing the files displayed in the cluster preview within the GUI
+- Assigning three labels from `audio_labels.index` to audio files for display in the GUI
+- Finding the top 5 results for a query in `textSearch.py`
