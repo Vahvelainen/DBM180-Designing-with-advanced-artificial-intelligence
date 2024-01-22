@@ -1,7 +1,7 @@
 import os
 import csv
 from tqdm import tqdm
-from tools import findDirectories
+from tools import findDirectories, readTextFile
 from imagebindEncoder import ImagebindEncoder
 
 
@@ -24,12 +24,18 @@ dirs.append(media_dir)
 files = []
 for dir in dirs:
     # Save files as tuples: ( filepath, filetype: ['text', 'image, 'audio'])
+    # Image
     jpgs_in_this_dir = [ file for file in os.listdir(dir) if file.lower().endswith('.jpg') ]
     for jpg in jpgs_in_this_dir:
         files.append( (dir + '/' + jpg, 'image') )
+    # Audio
     mp3s_in_this_dir = [ file for file in os.listdir(dir) if file.lower().endswith('.mp3') ]
     for mp3 in mp3s_in_this_dir:
         files.append( (dir + '/' + mp3, 'audio') )
+    # Text
+    txts_in_this_dir = [ file for file in os.listdir(dir) if file.lower().endswith('.txt') ]
+    for txt in txts_in_this_dir:
+        files.append( (dir + '/' + txt, 'text') )
 
 print('Found ' + str(len(files)) + ' compatible files in directory')
 
@@ -54,6 +60,9 @@ with open(output_csv, 'w', newline='') as csvfile:
                 embedding = encoder.imageEmbedding(filepath)
             elif filetype == 'audio':
                 embedding = encoder.audioEmbedding(filepath)
+            elif filetype == 'text':
+                text = readTextFile(filepath)
+                embedding = encoder.textEmbedding(text)
 
             csvwriter.writerow([filepath] + embedding.tolist()) 
 

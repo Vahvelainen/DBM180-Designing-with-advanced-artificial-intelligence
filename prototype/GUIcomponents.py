@@ -1,6 +1,6 @@
 import tkinter as tk
 from PIL import Image, ImageTk
-from tools import openFileInDefaultProgram, openAndResizeImage
+from tools import openFileInDefaultProgram, openAndResizeImage, readTextFile
 from clusters import Cluster, readIndex
 
 class TkWindow():
@@ -173,6 +173,18 @@ class FileCarousel():
         #Usinf .files for labels is kinda ugly but it is what it is :(
         description = description + '\n' + labels.files[i]
 
-      # The aduo text does not aling with images but I don't know how to fix it bc either TKinker is stupid or I am
+      # The audio text does not aling with images but I don't know how to fix it bc either TKinker is stupid or I am
+      label = tk.Label(self.images_frame, text=description)
+      label.grid(row=0, column=index)
+    #textfile
+    elif file_path.lower().endswith('.txt'):
+      # The text file is similar but the context is repesented with 3 rows of 20 characters
+      line_length = 20
+      max_lines = 3
+      text = readTextFile(file_path).replace('\t', ' ').replace('\n', ' ')
+      description = '\n'.join([text[i:i+line_length] for i in range(0, len(text), line_length)])
+      if len(description) > line_length * max_lines + max_lines:
+        description = description[: line_length * max_lines ] + '...'
+
       label = tk.Label(self.images_frame, text=description)
       label.grid(row=0, column=index)

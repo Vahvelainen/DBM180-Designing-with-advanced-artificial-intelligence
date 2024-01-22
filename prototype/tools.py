@@ -33,3 +33,9 @@ def findDirectories(base_path, depth=1, max_depth=3):
             directories.extend(find_directories(new_path, depth + 1, max_depth))
 
     return directories
+
+def readTextFile(file_path):
+    text = ""
+    with open(file_path, 'r') as file:
+        text = file.read()
+    return text
